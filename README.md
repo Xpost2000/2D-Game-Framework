@@ -7,3 +7,7 @@ enough for game jams actually (free hotreloadable assets, console, rendering wit
 browser target stuff... so yeah)
 
 because I don't particularly care about this, uh you can figure out how to build it on your own. sorry
+
+idk it was sorta fun I guess
+
+enjoy
