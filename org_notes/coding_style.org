@@ -1,0 +1,323 @@
+#+title: C Coding Style
+
+the conventions in this project are mainly focused on being simple whenever possible, but these
+are just guidelines rather than hard and fast rules.
+
+This is a pure C codebase so verbosity is emphasized. However simplicity is always something I will
+strive to do. Verbosity is very important since this language has no overloading.
+
+* Main
+  *Variables / Types / Functions*: 
+  Go basically full K&R style, snake_case lowercase. For this codebase keep this mostly
+  consistent.
+  
+  I don't have many special conventions for types or anything, although for internal or "private" procedures,
+  I tend to prefix them with underscores (one or two, it doesn't really matter. It just needs to identify that you shouldn't be using this).
+  
+  I should be taking more advantage of semantic macros to make it easier like:
+  #+begin_src c
+    #define function 
+    #define procedure void
+    #define private   static
+    #define export    extern
+
+    typedef const char* string;
+
+    function bool is_palindrone(string string, size_t string_length) {
+        for (size_t index = 0; index <= string_length/2; ++index) {
+            if (string[index] != string[string_length-1-index]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function int square(int x) {
+        return x * x;
+    }
+
+    procedure main() {
+    
+    }
+  #+end_src
+
+  I haven't really gotten around to doing that, but it might be a consideration since I kind of like the way that Pascal does things.
+  
+  Functions and variables are almost always without exception named as verbosely as possible. I like typing code, and
+  also I personally think it's more readable assuming the code is actually read and not skimmed.
+  
+  This is kind of odd cause some people prefer to not do this, which I understand but I choose to be fully verbose.
+  
+  #+begin_src c
+    // Not preferred
+    for (int i = 0; i < 10; ++i) {
+        printf(sqrtf(i));
+    }
+
+    // Preferred
+    for (unsigned index = 0; index < 10; ++index) {
+        printf(sqrtf(i));
+    }
+
+    // Optimal, if writing your own replacements for absolutely everything
+    for (unsigned index = 0; index < 10; ++index) {
+        print_formatted(square_root_f32(index));
+    }
+  #+end_src
+
+  It's a bit more typing but that's okay.
+
+  *Types: Unions/Structs/Enums*
+  
+  In C, there's a tagged namespace for certain types like structures and unions, and for the most part. Always prefer to
+  use the tag and DON'T typedef them away! This is for the same reason as the Linux style.
+
+  Unions are typically only used in either very special cases or for _discriminated unions._ Avoid using them in other cases when possible.
+  
+  Structures may be typedefed if they are being used to represent an _integeral type with stronger typechecking._ In otherwords a handle of some kind.
+    
+  Enums are basically never directly used because their sizes can vary based on the way it's setup.
+  *Use an enum to declare constants, but when using them as values, always use an appropriately determined integer size yourself.*
+  
+  So this is perfectly legit.
+  
+  #+begin_src c
+    enum framebuffer_format_type {
+        FRAMEBUFFER_FORMAT_TYPE_BGRA32,
+        FRAMEBUFFER_FORMAT_TYPE_ARGB32,
+        FRAMEBUFFER_FORMAT_TYPE_RGBA32,
+
+        FRAMEBUFFER_FORMAT_TYPE_RGB24,
+        FRAMEBUFFER_FORMAT_TYPE_RG16,
+
+        FRAMEBUFFER_FORMAT_TYPE_R8,
+    };
+    // Try to pack structures whenever possible.
+    // But only after you've gotten it to work.
+    struct framebuffer {
+        uint32_t width;
+        uint32_t height;
+
+        uint8_t components;
+        uint8_t format;
+
+        // Optimally allocate these as part of the structure
+        // so you can do it in one allocation (I know this isn't really related to the style)
+        // but do so anyways
+
+        // I'm not going to do it in this example
+        // but keep it in mind.
+        char* pixels;
+    };
+
+    void* memory_allocate_zeroed(size_t amount) {
+        void* memory = malloc(amount);
+
+        {
+            char* end_address = memory + amount;
+            char* cursor      = memory;
+
+            while (cursor < end_address) {
+                ,*cursor = 0;
+                cursor++;
+            }
+        }
+
+        return memory;
+    }
+
+    struct framebuffer framebuffer_create(uint32_t width, uint32_t height, uint8_t format, uint8_t components) {
+        return (struct framebuffer) {
+            .width      = width,
+            .height     = height,
+            .components = components,
+            .format     = format,
+            .pixels     = memory_allocate_zeroed(width * height * components),
+        };
+    }
+  #+end_src
+  
+  This example also introduces a few other tidbits of habits that should be adopted in this codebase!
+  
+  - Functions are usually namespaced by type in the traditional convention that I shouldn't really have to type since it's pretty
+    self-evident by reading. *If programming in a language with function overloading, then program with natural names as if they were verbs!*
+    
+    However since C has no function overloading, this is the concession we have to make. As many verb words behave differently based on context, so
+    must a function name behave differently based on type.
+
+  - Align things in a tabular format. It just looks nicer.
+  
+  - Always use stdint if possible. As well as stdbool. We're not cavemen!
+   
+  - Use C11/C99 liberally. While C89 is for maximum compatability, if you're willing to make concessions for compiler
+    support like I am right now, C11/C99 is the way to go. Designated initializers are cool. Basically everything except
+    _Variable Length Arrays_ are fair game.
+
+  - Pointers will follow the
+    #+begin_example
+    type* name;
+    #+end_example
+    
+    style, and not the more common
+    
+    #+begin_example
+    type *name;
+    #+end_example
+    
+    style. I understand this is in contradiction to the C declaration style. However the main dealie is that I *never use multiple initialization/declarations*.
+    I always declare variables on their own line even if they are the same type as I believe it's more clear.
+    
+  *Enums, Macros, Constants?*: 
+  Enum values and constants are namespaced and are SCREAMING_SNAKE_CASE. The reasoning for this is common and will not be stated.
+  
+  Macros, unlike the rest of the codebase... Generally has morte arbitrary rules. Capitalization is allowed for macros. In the future
+  it'll be more consistent for macros to be Title_case, or Pascal_Snake_Case. However that is not the case at the moment.
+  
+  *Prefer functional programming... When possible*:
+  Just because I program C doesn't mean always write imperative / procedural code. Whenever possible, write code to be as functional
+  as possible. This is much easier than it has been in previous versions of C, and is basically doable with little to no performance impacts
+  (on sufficiently big structs... It is very slightly slower, but as long as you avoid creating these structs inside of nested loops you're fine).
+
+  *Note on simplicity, Easy != Simple, Also safety. Bringing home some better ideas from other languages.*:
+  I'm a fan of Lisp, and quite a fan of Clojure and Rust. So these ideas are influenced by the time I spent in those languages.
+  
+  *Interfaces*:
+  I very much approve of them, and use them extensively in this engine. Either very explicitly (public/api types), or confirming to them through
+  procedures that are named very similarly.
+  
+  I believe they are a brilliant idea, and thankfully C doesn't make it very difficult to create your own dispatch table for them.
+  #+begin_src c
+    struct file_interface {
+        void   (*open)(void* self, char* file_name);
+        size_t (*read)(void* self, void* destination_buffer, size_t amount);
+        size_t (*write)(void* self, void* source_buffer, size_t amount);
+        void   (*close)(void* self);
+    };
+
+    // This takes advantage of the C "single inheritance pattern" trick
+    // so pointers to file_interface will also work on this because file_interface
+    // is the first member. This is not possible using the vtable method and you'd have to
+    // explicitly pass the interface pointer directly. But it's not a big deal. Infact it's probably
+    // better because it's very explicit.
+    struct file_std {
+        // If you care about size... Make a vtable like so...
+        #if 0
+        struct file_interface* interface;
+
+        #endif
+        struct file_interface interface;
+        FILE* data; 
+    };
+
+    /*
+     This does give incompatible pointer warnings, but that's bogus in this case.
+     ,*/
+    void   file_std_open(struct file_std* self, char* file_name) {}
+    size_t file_std_read(struct file_std* self, void* destination_buffer, size_t amount) {}
+    size_t file_std_write(struct file_std* self, void* source_buffer, size_t amount) {}
+    void   file_std_close(struct file_std* self) {}
+
+    struct file_std std_file_open(void) {
+        struct file_interface interface = (struct file_interface) {
+            .open  = file_std_open,
+            .read  = file_std_read,
+            .write = file_std_write,
+            .close = file_std_close,
+        };
+
+        return (struct file_std) {
+            .interface = interface,
+        };
+    }
+
+
+    #if 0 // VTABLE version
+
+    static struct file_interface file_std_dispatch_table = {
+        .open = file_std_open,
+        .read = file_std_read,
+        .write = file_std_write,
+        .close = file_std_close,
+    };
+
+    struct file_std std_file_open(void) {
+        return (struct file_std) {
+            .interface = &file_std_dispatch_table,
+        };
+    }
+    #endif
+
+    struct json_parse_result json_parse(struct file_interface* file, char* file_name) {
+        file->open(file, file_name);
+    }
+
+    // Usage code
+    void usage(void) {
+        struct file_std file = std_file_open();
+        json_parse(&file, "hello.json");
+    }
+  #+end_src
+  
+  For a more exemplary example of this, checkout SDL_RWops, which is an example of a well designed API using
+  this exact method. True polymorphic file handling that works very well, and is very very simple to understand.
+  
+  The other method of polymorphic behavior was something I already mentioned, which was a discriminated union. Use
+  this type for when the polymorphic behavior has a known amount of combinations. Or in other words, when it's not expected
+  to change because of the user.
+  
+  Use discriminated unions for private APIs that have limited combinations, or restricted APIs. Use the interface function pointer
+  style for more powerful polymorphic behaviors.
+
+  *Simplicity in every breath!*
+  
+  Always favor code honesty whenever possible!
+
+  - If statements are ALWAYS used. Never a single ternary!
+   
+  - To favor more freedom in APIs, if you can avoid it. NEVER use structures as parameters unless it's a very specific circumstance!
+    *ALWAYS FAVOR PLAIN TYPES EVEN IF THE ARGUMENT LIST IS LONG*
+
+  - *LONG LINES ARE GOOD*, it's incredibly honest and does not pollute the line count!
+    
+  - Switch statements should always have scoped blocks, (rare exception is for treating them like tables... In which case one liner is fine.)
+
+  - Long functions are also good. They are incredibly honest. Barring that, please name your internal functions very very well.
+
+  - Copy and paste is preferable than making a generic function which requires a special case (if it's intended to be generic. There are exceptions to that rule!)
+
+    (A decent example would be the file hentai, which has a copied and pasted function with a slight modification and named as _first_time, the
+     alternative implementation would have been to call the original function twice, or have a boolean flag. That's just wrong, the flag would complict
+     the code, and the function call twice does not signal the original intent! Which was to identify that it was an initial setup!
+
+     While I could have an _initial_ setup flag in the file hentai itself... It would just increase the cyclomatic complexity of the function in an artificial way
+     because you shouldn't have to care about the initial state... AFTER THE INITIAL STATE!)
+
+  - Special Casing and Hacked in code... Is fine! 
+
+    Most often, these are the simplest solutions to the problem. More importantly they are the most direct and honest solutions. That should not be judged or
+    discouraged!
+
+    It works, it's simple, it's small, and it addresses the problem in the most direct way! What is there to complain about?
+    In fact, this puts you in better shape for doing a more proper restructuring/refactor when that time comes as I find that the code I often hacked together
+    to solve certain solutions, is actually structured in such a way that it's relatively obvious which things have to be moved around in the right place.
+    
+    Hacked code is very malliable and is used when you don't have an inkling of the true solution yet, but you know what your result is.
+    
+    That malliability is very important for improving the future design of the code and therefore makes your life easier!
+    
+    Even if you never remove the hack, it's much more obvious to see a special case when it happens anyways.
+
+  *Safety!*
+  
+  Please... Please... Please bounds check things when possible! Use length restricted buffers and functions instead of relying on implicit termination!
+  (especially if you're writing to the buffer! Reading the buffer... Is a little better but it's a huge security hole! The only exception are cstrings ONLY IF THEY
+  ARE READ ONLY, OR PROVIDED BY THE CODE WITHOUT INPUT GUIDING IT! (IE: string building from a path... Is usually safe.))
+  
+  Please use memory pools, and centralize allocations whenever possible! It prevents memory leaks, gives you better design, and allows you to make better performance
+  optimizations. Also it makes serialization generally easier.
+  
+  Direct pointers should never be used outside of "read only" situations, or immediate writing. NEVER, EVER, STORE REAL POINTERS. That is asking for trouble! Store an index
+  to an internal storage container like an array!
+
+  You will be much happier, and find that smart pointers will seem much less attractive after this.

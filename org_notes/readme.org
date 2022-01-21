@@ -1,0 +1,46 @@
+#+title: What the fuck is this?
+
+This is my own game engine library thing.
+
+Technically it's really more of a library than an actual engine. It's
+just a very opinionated library.
+
+Infact, it's really more a framework.
+
+It doesn't provide game engine facilities but it provides what I think is
+a reasonably nice/sane programming environment for C99 game development.
+
+On Windows it needs no dependencies at all aside from header only libraries.
+
+For other platforms, it likely just runs on SDL2.
+
+Basically this thing is a shell that provides simple apis for:
+
+- generic 2D rendering with shader swapping
+- sound/audio. Quick easy sound playing.
+- collision modules, so you don't necessarily have to do everything yourself...
+
+The rest is mostly up to you.
+
+This may be heavily designed for a specific game but you can always just use
+the most fundamental apis to do whatever you want.
+
+This framework thing is meant to work with dynamic link libraries for development,
+so it's not too unlike Love2D style.
+
+A legitimate scripting language, may or may not actually be used in the engine. That is to
+be decided.
+
+For now I want to use scheme as a data format. While I could support a proper scripting language,
+I can just interpret my very limited scheme like language I suppose. However I'm really just using
+scheme for data as it is extremely easy to parse and work with in comparison to trying to parse the
+nightmare that is JSON, or literally any other configuration format.
+
+Will INI format is fine, and that may be used for very trivial configuration.
+
+But actual real data that is a bit more complicated than line by line key value pairs, will probably just
+be done as lisp sexpressions.
+
+Basically this like love2D but in C instead. I provide an environment for you to play in and a building
+projects with this is trivial.
+

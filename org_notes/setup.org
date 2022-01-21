@@ -1,0 +1,61 @@
+#+title: Setup / Requirements.
+
+This varies by platform but the idea is to be as minimal as possible on all platforms.
+
+I will try to implement a purely native backend in as many platforms as I can afford right
+now, however because Windows is historically the most common game development platform, and
+also the one that is most well documented and used by game programmers.
+
+It's basically the only backend I can guarantee is almost always freestanding.
+
+However, while the goal of the project is to be handmade whenever possible, another goal was
+to be convenient and easy to build. As well as having a simple codebase (simple != easy!).
+
+This project is deliberately setup as a Unity build for ease of compilation and also since it
+works pretty fast for the most part.
+
+So, like a good neighbor. External dependencies are bundled in their preshipped formats that come
+from their website. Which at the moment just means libGLEW and libSDL2.
+
+** Build Requirements (WIN32 Native)
+
+The windows version of this engine basically requires nothing except for a C compiler
+on Windows or a cross compiler on Linux.
+
+Exempting audio support because I haven't had time to do this yet. So it's incomplete!
+But when audio support is added.
+
+- OpenGL 3 compatible Graphics Card!
+- libGLEW (for now until I get GLaD to work)
+- GNU GCC (mingw toolchain), or any other C99 compliant compiler,
+  it's the only sane C compiler. Feel free to also use Clang.  This was never 
+  tested on MSVC, but I'm pretty sure MSVC doesn't compile pure C anyways...
+
+To build, you can do it in one line manually, but I suggest for building projects just bootstrap the
+buildtool from bootstrap_build.c and use ./build to build the engine or any games.
+
+If you are strictly building games, follow your compilers' instructions on making DLLs in a C ABI
+compatible way.
+
+** Build Requirements (SDL2)
+
+For any other platform that does not have a full native platform layer, an SDL2 intermediary layer
+is used for Audio, Windowing, and Input.
+
+Otherwise I use the OS libraries for everything else that is platform specific.
+
+- libSDL2, libSDL2mixer
+- libGLEW
+- A C compiler.
+
+** Build Requirements (Emscripten Web)
+
+As the libraries that I do end up using are conveniently popular, they already have emscripten ports.
+So this entire codebase automatically works with Emscripten aside from rewriting OpenGL shaders.
+
+In other words... All you require is:
+
+- WebGL 2.0 compatible browser
+- Emscripten
+
+Ironically, this is the easiest way to build the engine as everything is already prepackaged.

@@ -1,0 +1,5 @@
+syntax: glob
+
+*.exe
+*.x86_64
+org_notes/*

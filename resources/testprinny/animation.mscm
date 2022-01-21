@@ -1,0 +1,31 @@
+
+;; animation-set name
+;; list of animations
+
+;; animation name
+;; list of frames
+
+
+;; @current-texture-bind/animation-frame
+
+;; if arity == 4
+;; image-file image-rect time-to-next anchor-origin
+
+(animation-set "prinny"
+               (animation "idle" (("resources/testprinny/prinny_sheet.png" (0 0 128 126) () 0.0)))
+               (animation "yelp" (("resources/testprinny/prinny_sheet.png" (384 378 128 126) () 0.0)))
+               (animation "spinning"
+                          (("resources/testprinny/prinny_sheet.png" (128 0 128 126)   () 0.075)
+                           ("resources/testprinny/prinny_sheet.png" (256 0 128 126)   () 0.075)
+                           ("resources/testprinny/prinny_sheet.png" (0   126 128 126) () 0.075)
+                           ("resources/testprinny/prinny_sheet.png" (256 126 128 126) () 0.075)
+                           ("resources/testprinny/prinny_sheet.png" (0 252 128 126)   () 0.075)
+                           ("resources/testprinny/prinny_sheet.png" (256 252 128 126) () 0.075)
+                           ("resources/testprinny/prinny_sheet.png" (0 378 128 126)   () 0.075)
+                           ("resources/testprinny/prinny_sheet.png" (256 378 128 126) () 0.075)
+                           ("resources/testprinny/prinny_sheet.png" (128 378 128 126) () 0.075)
+                           ("resources/testprinny/prinny_sheet.png" (384 252 128 126) () 0.075)
+                           ("resources/testprinny/prinny_sheet.png" (128 252 128 126) () 0.075)
+                           ("resources/testprinny/prinny_sheet.png" (384 126 128 126) () 0.075)
+                           ("resources/testprinny/prinny_sheet.png" (128 126 128 126) () 0.075)
+                           ("resources/testprinny/prinny_sheet.png" (384 0 128 126)   () 0.075))))

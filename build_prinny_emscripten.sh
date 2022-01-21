@@ -1,0 +1,1 @@
+emcc main_sdl2.c demo_code/prinny_mark_host_old.c -O2 -s USE_SDL=2 -s USE_WEBGL2=1 -D BLACKIRON_STATIC_EXECUTABLE -I./. -o test.js -s INITIAL_MEMORY=127MB --preload-file resources --shell-file black_shell.html
