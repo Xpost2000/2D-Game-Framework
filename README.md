@@ -1,5 +1,7 @@
 # Blackiron Monkey
 
+**NOTE: This project was developed with Mercurial(hg) as source control. So the only files**
+
 Was originally intended for me to use during gamejams, and has a lot of amenities to make 
 rapid development very easy.
 
