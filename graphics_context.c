@@ -19,7 +19,7 @@
 #pragma GCC diagnostic pop
 #endif
 
-// prototype for the file hentai.
+// prototype for the file watcher.
 void _graphics_context_reload_resource(char* file_name, void* user_data);
 
 /////////////////// BEGIN Graphics Abstraction
@@ -682,7 +682,7 @@ enum graphics_context_resource_type {
     GRAPHICS_CONTEXT_RESOURCE_TYPE_SHADER,
     /* GRAPHICS_CONTEXT_RESOURCE_TYPE_FONT, */
 };
-struct graphics_context_file_hentai_user_data_packet {
+struct graphics_context_file_watcher_user_data_packet {
     struct graphics_context* context;
 
     uint8_t resource_type;
@@ -1080,17 +1080,17 @@ graphics_context_shader_handle  graphics_context_load_shader_from_file(struct gr
     graphics_context_shader_handle handle_result = {.id = slot_index};
 
     {
-        struct graphics_context_file_hentai_user_data_packet user_data_packet = (struct graphics_context_file_hentai_user_data_packet) {
+        struct graphics_context_file_watcher_user_data_packet user_data_packet = (struct graphics_context_file_watcher_user_data_packet) {
             .resource_type = GRAPHICS_CONTEXT_RESOURCE_TYPE_SHADER,
             .context       = graphics_context,
             .shader        = handle_result,
         };
         if (vertex_shader_location) {
-            file_hentai_stalk_file(shader_resource->vertex_file_path, &user_data_packet, sizeof(user_data_packet), _graphics_context_reload_resource);
+            file_watcher_stalk_file(shader_resource->vertex_file_path, &user_data_packet, sizeof(user_data_packet), _graphics_context_reload_resource);
         }
 
         if (fragment_shader_location) {
-            file_hentai_stalk_file(shader_resource->fragment_file_path, &user_data_packet, sizeof(user_data_packet), _graphics_context_reload_resource);
+            file_watcher_stalk_file(shader_resource->fragment_file_path, &user_data_packet, sizeof(user_data_packet), _graphics_context_reload_resource);
         }
     }
 
@@ -1215,12 +1215,12 @@ graphics_context_texture_handle graphics_context_load_texture_from_file(struct g
     struct graphics_context_texture* texture = &graphics_context->textures[resource_hash_index];
     strncpy(texture->file_path, file_location, BLACKIRON_MAX_PLATFORM_PATHNAME_LENGTH-1);
     {
-        struct graphics_context_file_hentai_user_data_packet user_data_packet = (struct graphics_context_file_hentai_user_data_packet) {
+        struct graphics_context_file_watcher_user_data_packet user_data_packet = (struct graphics_context_file_watcher_user_data_packet) {
             .resource_type = GRAPHICS_CONTEXT_RESOURCE_TYPE_TEXTURE,
             .context       = graphics_context,
             .texture       = handle_result,
         };
-        file_hentai_stalk_file(texture->file_path, &user_data_packet, sizeof(user_data_packet), _graphics_context_reload_resource);
+        file_watcher_stalk_file(texture->file_path, &user_data_packet, sizeof(user_data_packet), _graphics_context_reload_resource);
     }
     texture->status = GRAPHICS_CONTEXT_RESOURCE_STATUS_READY;
 
@@ -2653,7 +2653,7 @@ static void _graphics_context_unload_texture_resource(struct graphics_context* g
 
     /* if (cstring_length(texture_resource->file_path)) { */
     if (cstring_length(texture_resource->file_path)) {
-        file_hentai_stop_stalking_file(texture_resource->file_path);
+        file_watcher_stop_stalking_file(texture_resource->file_path);
         memset(texture_resource->file_path, 0, BLACKIRON_MAX_PLATFORM_PATHNAME_LENGTH);
     }
 }
@@ -2856,7 +2856,7 @@ void _graphics_context_reload_shader(struct graphics_context* graphics_context, 
 }
 
 void _graphics_context_reload_resource(char* file_name, void* user_data) {
-    struct graphics_context_file_hentai_user_data_packet* user_data_packet = user_data;
+    struct graphics_context_file_watcher_user_data_packet* user_data_packet = user_data;
 
     struct graphics_context* graphics_context = user_data_packet->context;
 

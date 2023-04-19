@@ -286,8 +286,8 @@ int main(int argument_count, char** argument_values) {
         // add main files...
 
         if (operating_system == OPERATING_SYSTEM_WINDOWS) {
-            string_builder_append_cstring(&build_command, "clang ");
-            /* string_builder_append_cstring(&build_command, "gcc "); */
+            /* string_builder_append_cstring(&build_command, "clang "); */
+            string_builder_append_cstring(&build_command, "gcc ");
         } else {
             // I have no idea if my compiler toolchain is borked,
             // or whatever since SDL2 does not appear to build with clang on

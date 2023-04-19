@@ -37,7 +37,7 @@
 #include "graphics_context.h"
 #include "console.h"
 #include "read_entire_file.h"
-#include "file_hentai.h"
+#include "file_watcher.h"
 
 static bool                    application_quit                        = false;
 static struct input            application_input                       = {0};
@@ -86,13 +86,13 @@ void _set_fixed_framerate_update(int32_t frames_per_second) {
 // Use configuration to handle these for now I guess...
 
 #ifdef _WIN32
-#include "file_hentai_win32.c"
+#include "file_watcher_win32.c"
 #elif defined(__linux__)
-#include "file_hentai_linux.c"
+#include "file_watcher_linux.c"
 #else
-#include "file_hentai_null.c"
+#include "file_watcher_null.c"
 #endif
-#include "file_hentai_common.c"
+#include "file_watcher_common.c"
 
 // TODO(jerry): No win32 backend
 #ifdef SDL2

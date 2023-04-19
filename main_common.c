@@ -53,7 +53,7 @@ struct host_application_description host_function_stub_get_application_descripti
 }
 
 static void platform_initialize(struct host_application_description* application_description, struct host_state* host_state, int argument_count, char** argument_values) {
-    file_hentai_initialize();
+    file_watcher_initialize();
 
     shared_object_get_application_description_function get_application_description_function = host_function_stub_get_application_description;
 #ifdef BLACKIRON_STATIC_EXECUTABLE
@@ -181,7 +181,7 @@ static void platform_frame(struct host_application_description* application_desc
     // non fixed update.
     application_description->functions.frame(host_state, last_delta_time);
     console_frame(&_global_graphics_context_api, &_global_input_api, last_delta_time);
-    file_hentai_update(last_delta_time);
+    file_watcher_update(last_delta_time);
     audio_update(last_delta_time);
 
     graphics_context_update(&application_graphics_context, last_delta_time);
@@ -194,7 +194,7 @@ static void platform_frame(struct host_application_description* application_desc
 
 static void platform_deinitialize(struct host_application_description* application_description, struct host_state* host_state) {
     audio_close_device();
-    file_hentai_deinitialize();
+    file_watcher_deinitialize();
     application_description->functions.deinitialize(host_state);
     graphics_context_deinitialize(&application_graphics_context);
 
