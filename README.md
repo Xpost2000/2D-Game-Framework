@@ -10,7 +10,7 @@ A simple C99 game framework that sets up simple shader based sprite rendering.
 - Performant **OpenGL** based sprite batch renderer
 - Flexible build system allowing dynamic or static linking for game code
 - Simple exposed APIs to avoid looking at engine code
-- **Controller and gamepad** support
+- **Controller and gamepad** support via XInput
 - Targets multiple platforms, and confirmed working on Windows, Linux (Ubuntu), and HTML5
 - Fixed-size Unicode **font-cache** allowing for **arbitrary UTF8 text rendering*** with minimal memory usage
 - Quake style development console with **autocompletion**
