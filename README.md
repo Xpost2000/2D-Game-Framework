@@ -33,6 +33,8 @@ and there is a simple postprocessing pipeline.
 ##  Media
 ![PrinnyMark!](./imgs/1.png)
 ![PrinnyMarkConsole!](./imgs/2.png)
+![PrinnyMarkWithLights!](./imgs/4.png)
+![PrinnyMarkHotReloadingImageGif!](./imgs/3.gif)
 
 ## Development / Compiling
 
