@@ -1,4 +1,4 @@
-# Blackiron Monkey
+# 2D Game Framework
 
 A simple C99 game framework that sets up simple shader based sprite rendering.
 
